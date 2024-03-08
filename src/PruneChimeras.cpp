@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <queue>
 #include <mpi.h>
 
 template <class T, class T1, class T2>
@@ -27,17 +28,23 @@ void PileupVector::AddInterval(int begin, int end)
     for (int i = begin; i < end; ++i) pileup[i]++;
 }
 
-std::tuple<int, int> PileupVector::GetTrimmedInterval(int threshold)
+
+
+std::tuple<int, int> PileupVector::GetTrimmedInterval(const int threshold)
 {
+    const double stretchfactor = 0.8;
+    const double accuracythreshold = 0.8;
     int len = Length();
     int beststart, bestend;
     double bestavg = 0;
     int curbases = 0;
     int start = -1, end = -1, maxlen = 2500;
+    int misses = 0;
+    // std::priority_queue<int> stack;
 
     for (int i = 0; i < len; ++i)
     {
-        if (pileup[i] >= threshold)
+        if (pileup[i] >= threshold )
         {
             if (start == -1)
             {
@@ -58,15 +65,31 @@ std::tuple<int, int> PileupVector::GetTrimmedInterval(int threshold)
                 bestavg = curavg;
             }
         }
+        else if ((pileup[i] >= threshold * stretch_factor) && start != -1){
+            // If we miss the threshold by a bit and are in an interval, then we add a miss
+            // If misses comprise more than 10% (arbitrary). then we end it
+            misses++;
+            if (misses < (end + 2 - start) * accuracythreshold){
+                start = -1;
+                end = -1;
+            } else {
+                // I don't want the interval to end on a miss, so i dont update the bests in this branch
+                end = i;
+                curbases += pileup[i];
+            }
+        }
         else
         {
+            // misses++;
             start = -1;
             end = -1;
         }
     }
-
+    // if misses > 
     return {start, end};
 }
+
+
 
 int PackPileupVectors(const std::vector<PileupVector>& pvs, std::vector<int>& packed, std::vector<int>& lens)
 {

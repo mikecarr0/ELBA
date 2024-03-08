@@ -21,6 +21,7 @@ public:
     void AddInterval(int begin, int end);
 
     std::tuple<int, int> GetTrimmedInterval(int threshold);
+    std::tuple<int, int> GetTrimmedInterval();
 
     ~PileupVector() = default;
 };

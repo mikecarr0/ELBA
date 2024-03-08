@@ -80,6 +80,7 @@ A tiny example `ecsample-sub1.fa` can be found in this repository.
 The parameters and options of ELBA are as follows:
 - ```-i <string>```: Input FASTA file.
 - ```-c <integer>```: Number of sequences in the FASTA file.
+- ```-c <float>```: bad read alignment cutoff
 - ```--sc <integer>```: Seed count. ```[default: 2]```
 - ```-k <integer>```: K-mer length.
 - ```-s <integer>```: K-mers stride. ```[default: 1]```
@@ -92,6 +93,7 @@ The parameters and options of ELBA are as follows:
 - ```--na```: Do not perform alignment.
 - ```--fa```: Full Smith-Waterman alignment.
 - ```--xa <integer>```: X-drop alignment with the indicated drop value.
+- ``` -x <integer>```: X-drop alignment threshold
 - ```--of <string>```: Overlap file.
 - ```--af <string>```: Output file to write alignment information. 
 - ```--idxmap <string>```: Output file for input sequences to ids used in ELBA.
